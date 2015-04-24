@@ -266,7 +266,8 @@ public:
     Indefinite_Integral();
     Indefinite_Integral(char* str);
     Polynomial getIntegrand(){return pol;}
-    Polynomial getPrimitive();
+    Polynomial getPrimitive(){return pol++;}
+    AlmostPolynomialFunction getAbsPrimitive();
 protected:
     Polynomial pol;
     Polynomial parseString(char* string) const;
@@ -309,10 +310,14 @@ class DefiniteIntegral:public Indefinite_Integral
 public:
     DefiniteIntegral();
     DefiniteIntegral(char* str);
-    double getValue(){return value;}
+    double getStart(){return start;}
+    double getEnd(){return end;}
+    void setStart(double val){start = val;}
+    void setEnd(double val){end = val;}
+    double evaluate();
+    double absEvaluate();
 protected:
-    double value, start, end;
-    void evaluate();
+    double start, end;
 };
 
 
