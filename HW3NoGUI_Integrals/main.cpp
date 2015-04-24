@@ -266,8 +266,8 @@ public:
     Indefinite_Integral();
     Indefinite_Integral(char* str);
     Polynomial getIntegrand(){return pol;}
-    Polynomial getPrimitive(){return pol++;}
-    AlmostPolynomialFunction getAbsPrimitive();
+    Polynomial getPrimitive(){return ++pol;} //Sets integration constant to 0.
+    //AlmostPolynomialFunction getAbsPrimitive();
 protected:
     Polynomial pol;
     Polynomial parseString(char* string) const;
@@ -309,17 +309,27 @@ class DefiniteIntegral:public Indefinite_Integral
 {
 public:
     DefiniteIntegral();
-    DefiniteIntegral(char* str);
+    DefiniteIntegral(char* str, double start, double end);
     double getStart(){return start;}
     double getEnd(){return end;}
     void setStart(double val){start = val;}
     void setEnd(double val){end = val;}
-    double evaluate();
+    double evaluate(){return getPrimitive()(end) - getPrimitive()(start);}
     double absEvaluate();
 protected:
     double start, end;
 };
 
+DefiniteIntegral::DefiniteIntegral():Indefinite_Integral()
+{
+    start = end = 0;
+}
+
+DefiniteIntegral::DefiniteIntegral(char* str, double start, double end)\
+                                        :Indefinite_Integral(str)
+{
+    this->start = start; this->end = end;
+}
 
 
 int main()
@@ -333,7 +343,10 @@ int main()
     char initpol[] = "5*x^10 +7*x^4 -16*x^2 -20";
     Indefinite_Integral ara(initpol);
     ara.getIntegrand().print();
-    
+    ara.getPrimitive().print();
+    DefiniteIntegral defitest(initpol, 0, 1);
+    cout<<defitest.evaluate()<<endl;
+    cout<<"Should be -23.43788"<<endl;
     
 	return 0;
 }
