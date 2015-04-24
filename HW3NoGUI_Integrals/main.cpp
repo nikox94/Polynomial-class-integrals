@@ -252,6 +252,21 @@ private:
  * 
  **/
 
+/**
+ * @class AlmostPolynomialFunction
+ * @author Nikola
+ * @date 04/24/15
+ * @file main.cpp
+ * @brief This will realise the need for a function that is the absolute value integral
+ * of a polynomial function.
+ */
+ //TODO
+class AlmostPolynomialFunction
+{
+    
+};
+
+
 
 /**
  * @class Indefinite_Integral
@@ -267,7 +282,7 @@ public:
     Indefinite_Integral(char* str);
     Polynomial getIntegrand(){return pol;}
     Polynomial getPrimitive(){return ++pol;} //Sets integration constant to 0.
-    //AlmostPolynomialFunction getAbsPrimitive();
+    //TODO AlmostPolynomialFunction getAbsPrimitive();
 protected:
     Polynomial pol;
     Polynomial parseString(char* string) const;
@@ -315,7 +330,7 @@ public:
     void setStart(double val){start = val;}
     void setEnd(double val){end = val;}
     double evaluate(){return getPrimitive()(end) - getPrimitive()(start);}
-    double absEvaluate();
+    double absEvaluate(); //TODO
 protected:
     double start, end;
 };
