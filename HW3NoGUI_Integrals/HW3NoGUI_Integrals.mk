@@ -15,8 +15,8 @@ CurrentFileFullPath    :=
 User                   :=Nikola
 Date                   :=04/24/15
 CodeLitePath           :="/home/nikola/.codelite"
-LinkerName             :=/usr/bin/g++ 
-SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
+LinkerName             :=/usr/bin/g++-4.8 
+SharedObjectLinkerName :=/usr/bin/g++-4.8 -shared -fPIC
 ObjectSuffix           :=.o
 DependSuffix           :=.o.d
 PreprocessSuffix       :=.i
@@ -48,8 +48,8 @@ LibPath                := $(LibraryPathSwitch).
 ## AR, CXX, CC, AS, CXXFLAGS and CFLAGS can be overriden using an environment variables
 ##
 AR       := /usr/bin/ar rcu
-CXX      := /usr/bin/g++ 
-CC       := /usr/bin/gcc 
+CXX      := /usr/bin/g++-4.8 
+CC       := /usr/bin/gcc-4.8 
 CXXFLAGS :=  -g -O0 -Wall $(Preprocessors)
 CFLAGS   :=  -g -O0 -Wall $(Preprocessors)
 ASFLAGS  := 
