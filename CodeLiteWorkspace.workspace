@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="CodeLiteWorkspace" Database="CodeLiteWorkspace.tags">
+  <Project Name="HW3Definite_and_Indefinite_Integrals" Path="HW3Definite_and_Indefinite_Integrals/HW3Definite_and_Indefinite_Integrals.project" Active="No"/>
+  <Project Name="HW3NoGUI_Integrals" Path="HW3NoGUI_Integrals/HW3NoGUI_Integrals.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug" Selected="yes">
+      <Project Name="HW3Definite_and_Indefinite_Integrals" ConfigName="Debug"/>
+      <Project Name="HW3NoGUI_Integrals" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release" Selected="yes">
+      <Project Name="HW3Definite_and_Indefinite_Integrals" ConfigName="Release"/>
+      <Project Name="HW3NoGUI_Integrals" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>
