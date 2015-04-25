@@ -263,10 +263,43 @@ private:
  //TODO
 class AlmostPolynomialFunction
 {
-    
+public:
+    AlmostPolynomialFunction(){Polynomial pol; roots = NULL; n=0;}
+    AlmostPolynomialFunction(Polynomial p,double* rts, int nm);
+    double operator()(double x) const;
+private:
+    Polynomial pol;
+    double* roots;
+    int n;
 };
 
-
+/**
+ * @brief Takes a polynomial function and the roots of it sorted in increasing order
+ * and the number of roots n.
+ * @param p - Polynomial function
+ * @param rts - array of double values roots of polynomial sorted in increasing order
+ * @param nm - number of roots/length of rts array.
+ * @return AlmostPolynomialFunction object
+ */
+AlmostPolynomialFunction::AlmostPolynomialFunction(Polynomial p,double* rts, int nm)
+{pol = p; n = nm; roots = new double[n]; for(int i=0;i<n;i++) roots[i]=rts[i];}
+double AlmostPolynomialFunction::operator()(double x) const
+{
+    if(x<=roots[0])
+        return pol(x);
+    
+    double result=0.0; int bggind;
+    for(int i=0;i<n;i++)
+        if(roots[i]<=x)
+            if(i%2==0)
+                result+=2*(this->operator()(roots[i]));
+            else
+                result-=2*(this->operator()(roots[i]));
+        else
+        {
+            bggind = i; break;
+        }
+}
 
 /**
  * @class Indefinite_Integral
