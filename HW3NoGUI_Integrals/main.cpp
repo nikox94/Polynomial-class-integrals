@@ -457,7 +457,6 @@ x^5 -820*x^4 -4100*x^3 +576*x^2 +2880*x^1"<<endl;
     cout<<"The integral of |P(x)| from -4.5 to -1.5 is:"\
     <<di3.absEvaluate(roots1, 10)<<endl;
     cout<<"Should be 13284.8"<<endl;
-    di3.getIntegrand().print();
     di3.setStart(-1.5);
     di3.setEnd(2.5);
     cout<<"From -1.5 to 2.5 is: "<<di3.absEvaluate(roots1, 10)<<"(4373.01)"<<endl;
