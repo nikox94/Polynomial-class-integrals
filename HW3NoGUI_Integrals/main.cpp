@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <vector>
+#include <math.h>
 using namespace std;
 
 /**
@@ -282,20 +283,29 @@ private:
  * @return AlmostPolynomialFunction object
  */
 AlmostPolynomialFunction::AlmostPolynomialFunction(Polynomial p,double* rts, int nm)
-{pol = p; n = nm; roots = new double[n]; for(int i=0;i<n;i++) roots[i]=rts[i];}
+{
+    pol = p; n = nm; 
+    if(n==0)
+        roots = NULL;
+    else
+    {
+        roots = new double[n]; 
+        for(int i=0;i<n;i++) 
+            roots[i]=rts[i];
+    }
+}
 double AlmostPolynomialFunction::operator()(double x) const
 {
-    if(x<=roots[0])
+    if(roots==NULL)
+        return pol(x);
+    if(x<=roots[0]+0.000001)
         return pol(x);
     
-    double result=0.0;
-    for(int i=0;i<n;i++)
-        if(roots[i]<=x)
-            result+=(i%2==0?2:-2)*pol(roots[i]); //cout<<result<<endl;}
-        else
-        {
-            result+=(i%2==0?1:-1)*pol(x); break;
-        }
+    double result=0.0; int i=0;
+    for(;i<n;i++)
+        if(roots[i]<=x+0.000001)
+            result+=(i%2==0?2:-2)*pol(roots[i]);
+    result+=((i)%2==0?1:-1)*pol(x);
     return result;
 }
 
@@ -346,7 +356,6 @@ Polynomial Indefinite_Integral::parseString(char* string) const
         if(*whereami=='\0') {ret.setCoefficient(0,coef); break;}
         whereami+=3;
         int index = (int) strtod(whereami, &whereami);
-        cout<<coef<<" "<<index<<" "<<whereami<<endl;
         ret.setCoefficient(index, coef);
     }
     return ret;
@@ -396,9 +405,10 @@ int main()
     cout<<defitest.evaluate()<<endl;
     cout<<"Should be -23.43788"<<endl;
     
-    char newpol[] = "1*x^2 -3*x^1 -4";
+    char newpol1[] = "1*x^2 -3*x^1 -4"; //0.3333*x^3 -1.5*x^2 -4*x^1
+    char newpol2[] = "0.3333*x^3 -1.5*x^2 -4*x^1";
     double rts1[] = {-1.0, 4.0};
-    DefiniteIntegral di1(newpol, 0,1);
+    DefiniteIntegral di1(newpol2, 0,1);
     AlmostPolynomialFunction apf1(di1.getIntegrand(), rts1, 2);
     di1.getIntegrand().print();
     cout<<"Evaluate the abs of the function above at -5, 0, 3, 10."<<endl;
