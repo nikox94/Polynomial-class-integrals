@@ -462,5 +462,13 @@ x^5 -820*x^4 -4100*x^3 +576*x^2 +2880*x^1"<<endl;
     di3.setEnd(2.5);
     cout<<"From -1.5 to 2.5 is: "<<di3.absEvaluate(roots1, 10)<<"(4373.01)"<<endl;
     
+    di3.setEnd(10);
+    cout<<"From -1.5 to 10 is: "<<di3.absEvaluate(roots1, 10)<<" (9.47381×10^9)"<<endl;
+    
+    di3.setStart(10);
+    di3.setEnd(11);
+    cout<<"From 10 to 11 is: "<<di3.absEvaluate(roots1, 10)<<" (1.8675360 × 10^10)"<<endl;
+    
+    
     return 0;
 }
