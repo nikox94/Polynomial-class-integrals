@@ -288,17 +288,15 @@ double AlmostPolynomialFunction::operator()(double x) const
     if(x<=roots[0])
         return pol(x);
     
-    double result=0.0; int bggind;
+    double result=0.0;
     for(int i=0;i<n;i++)
         if(roots[i]<=x)
-            if(i%2==0)
-                result+=2*(this->operator()(roots[i]));
-            else
-                result-=2*(this->operator()(roots[i]));
+            result+=(i%2==0?2:-2)*pol(roots[i]); //cout<<result<<endl;}
         else
         {
-            bggind = i; break;
+            result+=(i%2==0?1:-1)*pol(x); break;
         }
+    return result;
 }
 
 /**
@@ -342,11 +340,13 @@ Polynomial Indefinite_Integral::parseString(char* string) const
 {
     Polynomial ret;
     char* whereami = string;
-    while(*whereami!='\0')
+    while(true)
     {
         double coef = strtod(whereami, &whereami);
+        if(*whereami=='\0') {ret.setCoefficient(0,coef); break;}
         whereami+=3;
         int index = (int) strtod(whereami, &whereami);
+        cout<<coef<<" "<<index<<" "<<whereami<<endl;
         ret.setCoefficient(index, coef);
     }
     return ret;
@@ -395,6 +395,14 @@ int main()
     DefiniteIntegral defitest(initpol, 0, 1);
     cout<<defitest.evaluate()<<endl;
     cout<<"Should be -23.43788"<<endl;
+    
+    char newpol[] = "1*x^2 -3*x^1 -4";
+    double rts1[] = {-1.0, 4.0};
+    DefiniteIntegral di1(newpol, 0,1);
+    AlmostPolynomialFunction apf1(di1.getIntegrand(), rts1, 2);
+    di1.getIntegrand().print();
+    cout<<"Evaluate the abs of the function above at -5, 0, 3, 10."<<endl;
+    cout<<apf1(-5)<<" "<<apf1(0)<<" "<<apf1(3)<<" "<<apf1(10)<<endl;
     
     return 0;
 }
