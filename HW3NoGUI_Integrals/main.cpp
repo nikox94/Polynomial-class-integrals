@@ -261,12 +261,11 @@ private:
  * @brief This will realise the need for a function that is the absolute value integral
  * of a polynomial function.
  */
- //TODO
 class AlmostPolynomialFunction
 {
 public:
     AlmostPolynomialFunction(){Polynomial pol; roots = NULL; n=0;}
-    AlmostPolynomialFunction(Polynomial p,double* rts, int nm);
+    AlmostPolynomialFunction(Polynomial p,double* rts=NULL, int nm=0);
     double operator()(double x) const;
 private:
     Polynomial pol;
@@ -294,6 +293,12 @@ AlmostPolynomialFunction::AlmostPolynomialFunction(Polynomial p,double* rts, int
             roots[i]=rts[i];
     }
 }
+
+/**
+ * @brief Evaluates the function at a given x.
+ * @param x - value to evaluate at
+ * @return Value of the function there.
+ */
 double AlmostPolynomialFunction::operator()(double x) const
 {
     if(roots==NULL)
@@ -305,7 +310,9 @@ double AlmostPolynomialFunction::operator()(double x) const
     for(;i<n;i++)
         if(roots[i]<=x+0.000001)
             result+=(i%2==0?2:-2)*pol(roots[i]);
-    result+=((i)%2==0?1:-1)*pol(x);
+        else
+            break;
+    result+=(i%2==0?1:-1)*pol(x);
     return result;
 }
 
@@ -319,26 +326,31 @@ double AlmostPolynomialFunction::operator()(double x) const
 class Indefinite_Integral
 {
 public:
-    Indefinite_Integral();
-    Indefinite_Integral(char* str);
-    Polynomial getIntegrand(){return pol;}
-    Polynomial getPrimitive(){return ++pol;} //Sets integration constant to 0.
-    //TODO AlmostPolynomialFunction getAbsPrimitive();
+    Indefinite_Integral(){pol = *(new Polynomial());}
+    Indefinite_Integral(char* str){pol = parseString(str);}
+    Polynomial getIntegrand()const{return pol;}
+    Polynomial getPrimitive()const{Polynomial ret(pol); return ++ret;} //Sets integration constant to 0.
+    AlmostPolynomialFunction getAbsPrimitive(double* sortedroots=NULL, int numroots=0) const;
 protected:
     Polynomial pol;
     Polynomial parseString(char* string) const;
 };
 
-Indefinite_Integral::Indefinite_Integral()
-{
-    pol = *(new Polynomial());
-}
 
-Indefinite_Integral::Indefinite_Integral(char* str)
-{
-    pol = parseString(str);
-}
 
+
+/**
+ * @brief Returns the indefinite integral of a polynomial pol. Will not work properly without
+ * a sorted list of the roots of the integrand and their number!
+ * @param sortedroots - sorted array of the roots of the integrand. If there are no roots omit argument.
+ * e.g. {-1.0, 5.0, 10.0}.
+ * @param numroots - number of roots. If none, omit argument.
+ * @return AlmostPolynomialFunction object which is the primitive of |P(x)| and evaluates at any x.
+ */
+AlmostPolynomialFunction Indefinite_Integral::getAbsPrimitive(double* sortedroots, int numroots) const
+{
+    return AlmostPolynomialFunction(getPrimitive(), sortedroots, numroots);
+}
 
 /**
  * @brief Parses a polynomial string representation into a Polynomial object.\
@@ -367,12 +379,12 @@ class DefiniteIntegral:public Indefinite_Integral
 public:
     DefiniteIntegral();
     DefiniteIntegral(char* str, double start, double end);
-    double getStart(){return start;}
-    double getEnd(){return end;}
+    double getStart()const{return start;}
+    double getEnd()const{return end;}
     void setStart(double val){start = val;}
     void setEnd(double val){end = val;}
-    double evaluate(){return getPrimitive()(end) - getPrimitive()(start);}
-    double absEvaluate(); //TODO
+    double evaluate()const{return getPrimitive()(end) - getPrimitive()(start);}
+    double absEvaluate(double* sortedroots=NULL, int numroots=0)const;
 protected:
     double start, end;
 };
@@ -388,12 +400,19 @@ DefiniteIntegral::DefiniteIntegral(char* str, double start, double end)\
     this->start = start; this->end = end;
 }
 
+double DefiniteIntegral::absEvaluate(double* sortedroots, int numroots) const
+{
+    AlmostPolynomialFunction primitive = getAbsPrimitive(sortedroots, numroots);
+    return primitive(end) - primitive(start);
+}
+
+
 
 int main()
 {
 	
 
-    cout<<endl<<endl<<"**** \t 1. Indefinite integral ++ -- \t ****"<<endl<<endl;
+    cout<<endl<<endl<<"**** \t 1. Indefinite integral \t ****"<<endl<<endl;
 
     
 
@@ -413,6 +432,28 @@ int main()
     di1.getIntegrand().print();
     cout<<"Evaluate the abs of the function above at -5, 0, 3, 10."<<endl;
     cout<<apf1(-5)<<" "<<apf1(0)<<" "<<apf1(3)<<" "<<apf1(10)<<endl;
+    cout<<"Define and evaluate definite integral of |P(x)|."<<endl;
+    cout<<"Integral from -5 to 3 of 1*x^2 -3*x^1 -4 is:"<<endl;
+    DefiniteIntegral di2(newpol1, -5, 3);
+    cout<<di2.absEvaluate(rts1, 2)<<endl;
+    cout<<"Should be 80."<<endl;
+    
+    cout<<endl<<"Indefinite integral of\n\
+    (x+5)*(x+4)*(x+3)*(x+2)*(x+1)*x*(x-1)*(x-2)*(x-3)*(x-4)\n\
+    which is 1*x^10 +5*x^9 -30*x^8 -150*x^7 +273*x^6 +1365*\n\
+x^5 -820*x^4 -4100*x^3 +576*x^2 +2880*x^1"<<endl;
+    
+    char newpol3[] = "1*x^10 +5*x^9 -30*x^8 -150*x^7 +273*x^6 +1365*x^5 -820*x^4 -4100*x^3 +576*x^2 +2880*x^1";
+    DefiniteIntegral di3(newpol3,-4.5,-1.5);
+    double roots1[] = {-5, -4, -3, -2, -1, 0, 1, 2, 3, 4};
+    
+    cout<<"The integral of this from -4.5 to -1.5 is:"\
+    <<di3.absEvaluate(roots1, 10)<<endl;
+    cout<<"Should be 13284.8"<<endl;
+    di3.getIntegrand().print();
+    di3.setStart(-1.5);
+    di3.setEnd(2.5);
+    cout<<"From -1.5 to 2.5 is: "<<di3.absEvaluate(roots1, 10)<<"(4373.01)"<<endl;
     
     return 0;
 }
