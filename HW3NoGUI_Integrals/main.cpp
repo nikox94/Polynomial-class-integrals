@@ -7,9 +7,8 @@ using namespace std;
 
 /**
  * Will use the Polynomial class to represent a polynomial for the purposes of this problem.
- * The string will be converted to a polynomial which I will write a function for.
  * 
- *  
+ * 
  */
 
 
@@ -50,11 +49,11 @@ public:
             }
         }
     }
-	/** Copy constructor.
+	/** Copy constructor. Proper deep copy.
         */
 	Polynomial(const Polynomial &other)
     {
-        data = other.data; //Vector in stl copies over data. Deep copy is properly made. Tests below.
+        data = other.data;
         indeces = other.indeces;
     }
     Polynomial& operator=(Polynomial other)
@@ -169,6 +168,11 @@ public:
         Polynomial p(other);
         return p*=c;
     }
+    
+    /**
+     * @brief Interates a polynomial
+     * @return Integral of polynomial with constant set to 0.
+     */
     Polynomial& operator++()    // Pre-increment. Integrate
     {
         for(int i=0 ; i<indeces.size() ; i++)
@@ -179,6 +183,11 @@ public:
         data.push_back(0);
         return *this;
     }
+    
+    /**
+     * @brief Post-integrates a polynomial.
+     * @return Integral of polynomial.
+     */
     Polynomial operator++(int) // Post-increment. Integrate
     {
         Polynomial tmp(*this);
@@ -417,26 +426,24 @@ int main()
     
 
     char initpol[] = "5*x^10 +7*x^4 -16*x^2 -20";
-    Indefinite_Integral ara(initpol);
-    ara.getIntegrand().print();
-    ara.getPrimitive().print();
-    DefiniteIntegral defitest(initpol, 0, 1);
-    cout<<defitest.evaluate()<<endl;
-    cout<<"Should be -23.43788"<<endl;
+    Indefinite_Integral ii1(initpol);
+    ii1.getIntegrand().print();
+    ii1.getPrimitive().print();
+    DefiniteIntegral di0(initpol, 0, 1);
+    cout<<di0.evaluate()<<"(-23.43788)"<<endl<<endl;
     
-    char newpol1[] = "1*x^2 -3*x^1 -4"; //0.3333*x^3 -1.5*x^2 -4*x^1
-    char newpol2[] = "0.3333*x^3 -1.5*x^2 -4*x^1";
+    char newpol1[] = "1*x^2 -3*x^1 -4"; 
+    char newpol2[] = "0.3333*x^3 -1.5*x^2 -4*x^1"; //Integral of the above
     double rts1[] = {-1.0, 4.0};
-    DefiniteIntegral di1(newpol2, 0,1);
-    AlmostPolynomialFunction apf1(di1.getIntegrand(), rts1, 2);
+    DefiniteIntegral di1(newpol1, 0,1);
+    AlmostPolynomialFunction apf1(di1.getPrimitive(), rts1, 2);
     di1.getIntegrand().print();
-    cout<<"Evaluate the abs of the function above at -5, 0, 3, 10."<<endl;
+    cout<<"Evaluates the integral of |P(x)| for the function above at -5, 0, 3, 10."<<endl;
     cout<<apf1(-5)<<" "<<apf1(0)<<" "<<apf1(3)<<" "<<apf1(10)<<endl;
-    cout<<"Define and evaluate definite integral of |P(x)|."<<endl;
+    cout<<"Defines and evaluates the definite integral of |P(x)|."<<endl;
     cout<<"Integral from -5 to 3 of 1*x^2 -3*x^1 -4 is:"<<endl;
     DefiniteIntegral di2(newpol1, -5, 3);
-    cout<<di2.absEvaluate(rts1, 2)<<endl;
-    cout<<"Should be 80."<<endl;
+    cout<<di2.absEvaluate(rts1, 2)<<"(should be 80)"<<endl;
     
     cout<<endl<<"Indefinite integral of\n\
     (x+5)*(x+4)*(x+3)*(x+2)*(x+1)*x*(x-1)*(x-2)*(x-3)*(x-4)\n\
